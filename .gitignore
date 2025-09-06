@@ -1,0 +1,29 @@
+# Build artifacts
+/build/
+build/
+/build/**
+
+# Garmin package and intermediate binaries
+*.mpk
+*.mpkg
+
+# Generated MIR / intermediate compiler files
+**/*.mir
+build/external-mir/
+
+# Monkey C build metadata
+.monkey.jungle.cache
+monkey.jungle.cache
+
+# IDE / editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Editor swap and backup files
+*~
+*.swp
+*.tmp
+
+# Logs
+*.log

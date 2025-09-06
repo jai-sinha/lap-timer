@@ -1,0 +1,14 @@
+<strings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <string id="AppName">lap-timer</string>
+
+    <string id="prompt">Click the menu button</string>
+
+    <string id="menu_start_stop">Start/Stop</string>
+    <string id="menu_reset">Reset</string>
+    <string id="menu_presets">Presets</string>
+
+    <string id="label_total">Total</string>
+    <string id="label_current">Current</string>
+    <string id="label_prev">Prev</string>
+    <string id="label_fastest">Fastest</string>
+</strings>
