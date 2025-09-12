@@ -1,14 +1,17 @@
 import Toybox.Graphics;
 import Toybox.WatchUi;
-import Toybox.Timer;
 import Toybox.System;
 import Toybox.Lang;
+import Toybox.Timer;
 
 class lap_timerView extends WatchUi.View {
     private var _timer as Timer.Timer?;
     private var _startTime as Number = 0;
     private var _elapsedMs as Number = 0;
-    private var _lapTimes as Array<Number> = [];
+    private var _lapTimes as Array<String> = [];
+    private var _lapTimesMs as Array<Number> = [];  // Keep raw ms for best lap calculation
+    private var _bestLap as String = "";  // Best lap time (formatted string)
+    private var _prevLap as String = "";  // Previous lap time (formatted string)
 
     function initialize() {
         View.initialize();
@@ -50,6 +53,21 @@ class lap_timerView extends WatchUi.View {
         var x = (dc.getWidth() - textWidth) / 2;
         var y = labelY + labelHeight + 5; // 5 pixels spacing
         dc.drawText(x, y, font, timeString, Graphics.TEXT_JUSTIFY_LEFT);
+        
+        // Draw Best Lap and Prev Lap below the timer
+        var tinyFont = Graphics.FONT_XTINY;
+        var bestText = "B: " + (_bestLap.length() > 0 ? _bestLap : "--:--.-");
+        var prevText = "P: " + (_prevLap.length() > 0 ? _prevLap : "--:--.-");
+        
+        var bestWidth = dc.getTextWidthInPixels(bestText, tinyFont);
+        var prevWidth = dc.getTextWidthInPixels(prevText, tinyFont);
+        
+        var bestX = (dc.getWidth() / 2 - bestWidth) / 2;  // Left side
+        var prevX = dc.getWidth() / 2 + (dc.getWidth() / 2 - prevWidth) / 2;  // Right side
+        var statsY = y + textHeight + 8;  // Below timer (reduced spacing)
+        
+        dc.drawText(bestX, statsY, tinyFont, bestText, Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(prevX, statsY, tinyFont, prevText, Graphics.TEXT_JUSTIFY_LEFT);
     }
 
     function onHide() as Void {
@@ -75,12 +93,35 @@ class lap_timerView extends WatchUi.View {
     public function saveLapAndReset() as Void {
         System.println("saveLapAndReset called! Current elapsed: " + _elapsedMs);
         
-        // Save current lap time
-        _lapTimes.add(_elapsedMs);
-        System.println("Added lap time: " + _elapsedMs + ", total laps: " + _lapTimes.size());
+        // Format current lap time as string
+        var formattedLapTime = formatTime(_elapsedMs);
         
-        // Print lap times array to console
+        // Save current lap time as formatted string and raw milliseconds
+        _lapTimes.add(formattedLapTime);
+        _lapTimesMs.add(_elapsedMs);
+        System.println("Added lap time: " + formattedLapTime + ", total laps: " + _lapTimes.size());
+        
+        // Update previous lap
+        _prevLap = formattedLapTime;
+        
+        // Update best lap (find minimum by comparing raw millisecond values)
+        if (_lapTimes.size() == 1) {
+            _bestLap = formattedLapTime;
+        } else {
+            // Find the index of the best lap by comparing raw milliseconds
+            var bestIndex = 0;
+            for (var i = 1; i < _lapTimesMs.size(); i++) {
+                if (_lapTimesMs[i] < _lapTimesMs[bestIndex]) {
+                    bestIndex = i;
+                }
+            }
+            _bestLap = _lapTimes[bestIndex];
+        }
+        
+        // Print lap times array, best lap, and prev lap to console
         System.println("Lap times array: " + _lapTimes.toString());
+        System.println("Best lap: " + _bestLap);
+        System.println("Previous lap: " + _prevLap);
         
         // Reset timer
         _startTime = System.getTimer();
@@ -96,7 +137,7 @@ class lap_timerView extends WatchUi.View {
         return _lapTimes.size();
     }
 
-    public function getLapTimes() as Array<Number> {
+    public function getLapTimes() as Array<String> {
         return _lapTimes;
     }
 }
