@@ -8,6 +8,7 @@ class lap_timerView extends WatchUi.View {
     private var _timer as Timer.Timer?;
     private var _startTime as Number = 0;
     private var _elapsedMs as Number = 0;
+    private var _lapTimes as Array<Number> = [];
 
     function initialize() {
         View.initialize();
@@ -30,8 +31,12 @@ class lap_timerView extends WatchUi.View {
         var textWidth = dc.getTextWidthInPixels(timeString, font);
         var textHeight = dc.getFontHeight(font);
         
-        // Draw "Current Lap" label above the timer
+        // Draw "Current Lap" label with lap count above the timer
+        var lapCount = getLapCount();
         var labelText = "Current Lap";
+        if (lapCount > 0) {
+            labelText += " (" + (lapCount + 1) + ")";
+        }
         var labelFont = Graphics.FONT_MEDIUM;
         var labelWidth = dc.getTextWidthInPixels(labelText, labelFont);
         var labelHeight = dc.getFontHeight(labelFont);
@@ -65,5 +70,33 @@ class lap_timerView extends WatchUi.View {
     public function updateTimer() as Void {
         _elapsedMs = System.getTimer() - _startTime;
         WatchUi.requestUpdate();
+    }
+
+    public function saveLapAndReset() as Void {
+        System.println("saveLapAndReset called! Current elapsed: " + _elapsedMs);
+        
+        // Save current lap time
+        _lapTimes.add(_elapsedMs);
+        System.println("Added lap time: " + _elapsedMs + ", total laps: " + _lapTimes.size());
+        
+        // Print lap times array to console
+        System.println("Lap times array: " + _lapTimes.toString());
+        
+        // Reset timer
+        _startTime = System.getTimer();
+        _elapsedMs = 0;
+        System.println("Timer reset to 0");
+        
+        // Request update to refresh display
+        WatchUi.requestUpdate();
+        System.println("Requested UI update");
+    }
+
+    public function getLapCount() as Number {
+        return _lapTimes.size();
+    }
+
+    public function getLapTimes() as Array<Number> {
+        return _lapTimes;
     }
 }

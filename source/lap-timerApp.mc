@@ -3,6 +3,7 @@ import Toybox.Lang;
 import Toybox.WatchUi;
 
 class lap_timerApp extends Application.AppBase {
+    private var _currentView as lap_timerView?;
 
     function initialize() {
         AppBase.initialize();
@@ -18,7 +19,21 @@ class lap_timerApp extends Application.AppBase {
 
     // Return the initial view of your application here
     function getInitialView() as [Views] or [Views, InputDelegates] {
-        return [ new lap_timerView(), new lap_timerDelegate() ];
+        _currentView = new lap_timerView();
+        return [ _currentView, new lap_timerDelegate() ];
+    }
+
+    // Method to handle lap saving from the delegate
+    public function saveLap() as Void {
+        System.println("App.saveLap() called");
+        
+        if (_currentView != null) {
+            System.println("Calling saveLapAndReset on stored view reference");
+            _currentView.saveLapAndReset();
+            System.println("saveLapAndReset called successfully on stored view");
+        } else {
+            System.println("ERROR: No stored view reference!");
+        }
     }
 
 }
