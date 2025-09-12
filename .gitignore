@@ -19,7 +19,6 @@ monkey.jungle.cache
 .vscode/
 .idea/
 .DS_Store
-html
 
 # Editor swap and backup files
 *~
