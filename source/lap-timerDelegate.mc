@@ -15,40 +15,31 @@ class lap_timerDelegate extends WatchUi.BehaviorDelegate {
 
     function onKey(evt as WatchUi.KeyEvent) as Boolean {
         var key = evt.getKey();
+        System.println("Key pressed: " + key);
+        System.println(evt.getKey());
         
-        // Check for start/stop button (KEY_ENTER in simulator, KEY_START/KEY_LAP on device)
-        if (key == KEY_START || key == KEY_LAP || key == KEY_ENTER) {
-            System.println("Start/Lap/Enter key detected, saving lap...");
-            
-            // Call the app's saveLap method
+        // LIGHT key for lap saving
+        if (key == 8) {
+            System.println("LIGHT key (8) detected, saving lap...");
             var app = Application.getApp();
             if (app != null && app has :saveLap) {
                 app.saveLap();
-                System.println("Lap saved and timer reset via app");
                 return true;
-            } else {
-                System.println("Error: Could not access app saveLap method");
-                return false;
             }
+            return false;
         }
         
-        return false;
-    }
-
-    function onKeyPressed(evt as WatchUi.KeyEvent) as Boolean {
-        var key = evt.getKey();
+        // Start/Stop/Enter key for program start/stop and data send
         if (key == KEY_START || key == KEY_LAP || key == KEY_ENTER) {
-            System.println("Start/Lap/Enter key pressed");
-            // Could also trigger saveLap here if needed for press events
+            System.println("Start/Lap/Enter key detected, starting/stopping program...");
+            var app = Application.getApp();
+            if (app != null && app has :toggleProgram) {
+                app.toggleProgram();
+                return true;
+            }
+            return false;
         }
-        return false;
-    }
-
-    function onKeyReleased(evt as WatchUi.KeyEvent) as Boolean {
-        var key = evt.getKey();
-        if (key == KEY_START || key == KEY_LAP || key == KEY_ENTER) {
-            System.println("Start/Lap/Enter key released");
-        }
+        
         return false;
     }
 

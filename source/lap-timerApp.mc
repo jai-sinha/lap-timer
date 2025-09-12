@@ -36,6 +36,28 @@ class lap_timerApp extends Application.AppBase {
         }
     }
 
+    // Method to toggle start/stop from LIGHT key
+    public function toggleStartStop() as Void {
+        System.println("App.toggleStartStop() called");
+        
+        if (_currentView != null) {
+            _currentView.toggleStartStop();
+        } else {
+            System.println("ERROR: No stored view reference!");
+        }
+    }
+
+    // Method to toggle program start/stop from start/stop/enter key
+    public function toggleProgram() as Void {
+        System.println("App.toggleProgram() called");
+        
+        if (_currentView != null) {
+            _currentView.toggleProgram();
+        } else {
+            System.println("ERROR: No stored view reference!");
+        }
+    }
+
 }
 
 function getApp() as lap_timerApp {

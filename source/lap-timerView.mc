@@ -3,6 +3,7 @@ import Toybox.WatchUi;
 import Toybox.System;
 import Toybox.Lang;
 import Toybox.Timer;
+import Toybox.Communications;
 
 class lap_timerView extends WatchUi.View {
     private var _timer as Timer.Timer?;
@@ -12,6 +13,7 @@ class lap_timerView extends WatchUi.View {
     private var _lapTimesMs as Array<Number> = [];  // Keep raw ms for best lap calculation
     private var _bestLap as String = "";  // Best lap time (formatted string)
     private var _prevLap as String = "";  // Previous lap time (formatted string)
+    private var _isRunning as Boolean = false;
 
     function initialize() {
         View.initialize();
@@ -22,9 +24,7 @@ class lap_timerView extends WatchUi.View {
     }
 
     function onShow() as Void {
-        _startTime = System.getTimer();
-        _timer = new Timer.Timer();
-        _timer.start(method(:updateTimer), 100, true);
+        // Timer will be started via toggleStartStop
     }
 
     function onUpdate(dc as Dc) as Void {
@@ -74,6 +74,72 @@ class lap_timerView extends WatchUi.View {
         if (_timer != null) {
             _timer.stop();
             _timer = null;
+        }
+        _isRunning = false;
+    }
+
+    private function startTimer() as Void {
+        _startTime = System.getTimer() - _elapsedMs;  // Adjust for paused time
+        _timer = new Timer.Timer();
+        _timer.start(method(:updateTimer), 100, true);
+        _isRunning = true;
+        WatchUi.requestUpdate();
+    }
+
+    private function stopTimer() as Void {
+        if (_timer != null) {
+            _timer.stop();
+            _timer = null;
+        }
+        _isRunning = false;
+        WatchUi.requestUpdate();
+    }
+
+    public function toggleStartStop() as Void {
+        if (_isRunning) {
+            stopTimer();
+        } else {
+            startTimer();
+        }
+    }
+
+    public function toggleProgram() as Void {
+        if (_isRunning) {
+            // Stop the program and send data
+            stopTimer();
+            sendDataToPhone();
+            // Exit the app
+            System.exit();
+        } else {
+            // Start the program
+            startTimer();
+        }
+    }
+
+    private function sendDataToPhone() as Void {
+        var data = {
+            "lapTimes" => _lapTimes,
+            "bestLap" => _bestLap,
+            "totalTime" => formatTime(_elapsedMs)
+        };
+        Communications.makeWebRequest(
+            "https://example.com/api/lap-data",  // Replace with actual endpoint
+            data,
+            {
+                :method => Communications.HTTP_REQUEST_METHOD_POST,
+                :headers => {
+                    "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON
+                }
+            },
+            method(:onDataSent)
+        );
+    }
+
+    function onDataSent(responseCode as Number, data as Dictionary) as Void {
+        if (responseCode == 200) {
+            System.println("Data sent successfully");
+        } else {
+            System.println("Failed to send data: " + responseCode);
         }
     }
 
