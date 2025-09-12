@@ -1,6 +1,7 @@
 import Toybox.System;
 import Toybox.Lang;
 import Toybox.Math;
+import Toybox.Position;
 
 // Simple global model for lap timer state and logic.
 
@@ -12,6 +13,13 @@ var lt_prevLap = 0;
 var lt_fastestLap = 0;
 var lt_laps as Array = [];
 var lt_lastWasInside = false;
+var lt_currentSpeed = 0;
+var lt_avgSpeed = 0;
+var lt_maxSpeed = 0;
+var lt_speedSum = 0;
+var lt_speedCount = 0;
+// Simple status log (most recent messages shown as a toast)
+var lt_statuses as Array = [];
 
 // Each preset: [ name, lat, lon, radius ]
 // presets: Array of [String, Number, Number, Number]
@@ -22,6 +30,7 @@ var lt_presets as Array = [
 ];
 
 var lt_selectedPreset as Number = 0;
+var lt_screenIndex as Number = 0;
 
 function _nowMillis() as Number {
     // System.getClockTime() returns a ClockTime struct; use its seconds field
@@ -58,6 +67,21 @@ function start() as Void {
         lt_prevLap = 0;
         lt_fastestLap = 0;
         lt_lastWasInside = false;
+        lt_currentSpeed = 0;
+        lt_avgSpeed = 0;
+        lt_maxSpeed = 0;
+        lt_speedSum = 0;
+        lt_speedCount = 0;
+        // Enable continuous GPS updates when timer starts. Use Position if available.
+        if (Position != null) {
+            // Request continuous updates and deliver to positionListener
+            try {
+                Position.enableLocationEvents(Position.LOCATION_CONTINUOUS, new Lang.Method(self, :positionListener));
+            } catch (ex) {
+                // ignore if device doesn't support or permission not granted
+            }
+        }
+    addStatus("Started");
     }
 }
 
@@ -65,6 +89,21 @@ function stop() as Void {
     if (lt_running) {
         lt_lastStopTime = _nowMillis();
         lt_running = false;
+        // Disable GPS updates when timer stops
+        if (Position != null) {
+            try {
+                // Request no location events to stop updates. Some platforms accept LOCATION_NONE.
+                if (Position has :LOCATION_NONE) {
+                    Position.enableLocationEvents(Position.LOCATION_NONE, null);
+                } else {
+                    // Fallback: request one-shot with null listener to stop continuous updates
+                    Position.enableLocationEvents(Position.LOCATION_ONE_SHOT, new Lang.Method(self, :positionListener));
+                }
+            } catch (ex) {
+                // ignore
+            }
+        }
+    addStatus("Stopped");
     }
 }
 
@@ -77,6 +116,24 @@ function reset() as Void {
     lt_fastestLap = 0;
     lt_laps = [];
     lt_lastWasInside = false;
+    lt_currentSpeed = 0;
+    lt_avgSpeed = 0;
+    lt_maxSpeed = 0;
+    lt_speedSum = 0;
+    lt_speedCount = 0;
+    // Ensure GPS updates are disabled on reset
+    if (Position != null) {
+        try {
+            if (Position has :LOCATION_NONE) {
+                Position.enableLocationEvents(Position.LOCATION_NONE, null);
+            } else {
+                Position.enableLocationEvents(Position.LOCATION_ONE_SHOT, new Lang.Method(self, :positionListener));
+            }
+        } catch (ex) {
+            // ignore
+        }
+    }
+    addStatus("Reset");
 }
 
 function _recordLapAtTime(t as Number) as Void {
@@ -88,6 +145,7 @@ function _recordLapAtTime(t as Number) as Void {
     // Append lapTime to the laps array using Array.add
     lt_laps.add(lapTime);
     lt_currentLapStart = t;
+    addStatus("Lap: " + formatDuration(lapTime));
 }
 
 function recordLap() as Void {
@@ -110,6 +168,49 @@ function onPositionUpdate(lat as Number, lon as Number) as Void {
         recordLap();
     }
     lt_lastWasInside = inside;
+}
+
+// Position listener invoked by Toybox.Position. Receives a Position.Info object.
+function positionListener(info) as Void {
+    if (info == null) {
+        return;
+    }
+    // info.position is a Position.Location object
+    if (info has :position and info.position != null) {
+        // Convert to degrees array: [lat, lon]
+        var degs = info.position.toDegrees();
+        if (degs != null and degs.size() >= 2) {
+            var lat = degs[0] as Number;
+            var lon = degs[1] as Number;
+            // Forward numeric lat/lon to existing adapter
+            onPositionUpdate(lat, lon);
+        }
+    }
+    // Update speed if available
+    if (info has :speed and info.speed != null) {
+        lt_currentSpeed = info.speed * 2.23694; // m/s to mph
+        lt_speedSum += lt_currentSpeed;
+        lt_speedCount += 1;
+        lt_avgSpeed = lt_speedSum / lt_speedCount;
+        if (lt_currentSpeed > lt_maxSpeed) {
+            lt_maxSpeed = lt_currentSpeed;
+        }
+    }
+}
+
+// Status log API
+function addStatus(msg as String) as Void {
+    var ts = _nowMillis();
+    // keep a short ring of recent messages
+    lt_statuses.add({:time => ts, :msg => msg});
+    // limit to last 5 messages
+    while (lt_statuses.size() > 5) {
+        lt_statuses.remove(0);
+    }
+}
+
+function getStatusMessages() as Array {
+    return lt_statuses;
 }
 
 function getTotalTimeMillis() as Number {
@@ -142,6 +243,18 @@ function getFastestLapMillis() as Number {
     return lt_fastestLap;
 }
 
+function getCurrentSpeed() as Number {
+    return lt_currentSpeed;
+}
+
+function getAvgSpeed() as Number {
+    return lt_avgSpeed;
+}
+
+function getMaxSpeed() as Number {
+    return lt_maxSpeed;
+}
+
 function getLaps() as Array {
     return lt_laps;
 }
@@ -163,6 +276,18 @@ function selectPreset(idx as Number) as Void {
     if (idx >= 0 and idx < lt_presets.size()) {
         lt_selectedPreset = idx;
     }
+}
+
+function getScreenIndex() as Number {
+    return lt_screenIndex;
+}
+
+function setScreenIndex(idx as Number) as Void {
+    lt_screenIndex = idx;
+}
+
+function getScreenCount() as Number {
+    return 3; // times, speeds, laps
 }
 
 function formatDuration(ms as Number) as String {
