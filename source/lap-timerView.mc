@@ -4,6 +4,8 @@ import Toybox.System;
 import Toybox.Lang;
 import Toybox.Timer;
 import Toybox.Communications;
+import Toybox.Position;
+import Toybox.Math;
 
 class lap_timerView extends WatchUi.View {
     private var _timer as Timer.Timer?;
@@ -15,9 +17,20 @@ class lap_timerView extends WatchUi.View {
     private var _prevLap as String = "";  // Previous lap time (formatted string)
     private var _isRunning as Boolean = false;
     private var _state as Number = TIMER_STOPPED;
+    
+    // GPS-related variables
+    private var _currentLocation as Position.Location?;
+    private var _lastLocation as Position.Location?;
+    private var _startFinishLat as Float = 37.52126; // San Francisco test coordinates
+    private var _startFinishLon as Float = -122.302884;
+    private var _crossingThreshold as Float = 0.0001; // ~11 meters at this latitude
+    private var _hasStarted as Boolean = false;
+    private var _lastCrossingSide as Number = 0; // -1 or 1 to track which side of line we're on
 
     function initialize() {
         View.initialize();
+        // Enable position tracking
+        Position.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:onPosition));
     }
 
     function onLayout(dc as Dc) as Void {
@@ -65,7 +78,7 @@ class lap_timerView extends WatchUi.View {
         
         var bestX = (dc.getWidth() / 2 - bestWidth) / 2;  // Left side
         var prevX = dc.getWidth() / 2 + (dc.getWidth() / 2 - prevWidth) / 2;  // Right side
-        var statsY = y + textHeight + 8;  // Below timer (reduced spacing)
+        var statsY = y + textHeight + 8;  // Below timer
         
         dc.drawText(bestX, statsY, tinyFont, bestText, Graphics.TEXT_JUSTIFY_LEFT);
         dc.drawText(prevX, statsY, tinyFont, prevText, Graphics.TEXT_JUSTIFY_LEFT);
@@ -77,6 +90,63 @@ class lap_timerView extends WatchUi.View {
             _timer = null;
         }
         _isRunning = false;
+        // Disable position tracking when view is hidden
+        Position.enableLocationEvents(Position.LOCATION_DISABLE, null);
+    }
+
+    // Check if the user has crossed the start/finish line
+    private function checkLineCrossing() as Void {
+        if (_currentLocation == null || _lastLocation == null) {
+            return;
+        }
+        
+        var currentCoords = _currentLocation.toDegrees();
+        var currentLat = currentCoords[0].toFloat();
+        var currentLon = currentCoords[1].toFloat();
+        var lastCoords = _lastLocation.toDegrees();
+        var lastLat = lastCoords[0].toFloat();
+        
+        // Calculate distance from current position to start/finish line
+        var currentDistance = calculateDistance(currentLat, currentLon, _startFinishLat, _startFinishLon);
+        
+        // Determine which side of the line we're on (simple approach using latitude difference)
+        var currentSide = currentLat > _startFinishLat ? 1 : -1;
+        var lastSide = lastLat > _startFinishLat ? 1 : -1;
+        
+        // Check if we've crossed the line (different sides) and are close enough
+        if (currentSide != lastSide && currentDistance < _crossingThreshold) {
+            if (!_hasStarted) {
+                // First crossing establishes our starting position
+                _hasStarted = true;
+                _lastCrossingSide = currentSide;
+                System.println("GPS: Timer started, established start/finish line");
+            } else if (_lastCrossingSide != 0 && currentSide != _lastCrossingSide) {
+                // We've crossed back to complete a lap
+                System.println("GPS: Line crossing detected! Auto-counting lap");
+                saveLapAndReset();
+                _lastCrossingSide = currentSide;
+            }
+        }
+    }
+
+    // Calculate distance between two GPS coordinates (simple approximation)
+    private function calculateDistance(lat1 as Float, lon1 as Float, lat2 as Float, lon2 as Float) as Float {
+        var latDiff = lat1 - lat2;
+        var lonDiff = lon1 - lon2;
+        return Math.sqrt(latDiff * latDiff + lonDiff * lonDiff);
+    }
+
+    // GPS position callback
+    function onPosition(info as Position.Info) as Void {
+        if (info.position != null) {
+            _lastLocation = _currentLocation;
+            _currentLocation = info.position;
+            
+            // Check for start/finish line crossing if timer is running
+            if (_isRunning && _currentLocation != null && _lastLocation != null) {
+                checkLineCrossing();
+            }
+        }
     }
 
     private function startTimer() as Void {
@@ -85,6 +155,11 @@ class lap_timerView extends WatchUi.View {
         _timer.start(method(:updateTimer), 100, true);
         _isRunning = true;
         _state = TIMER_RUNNING;
+        
+        // Reset GPS tracking state when starting
+        _hasStarted = false;
+        _lastCrossingSide = 0;
+        
         WatchUi.requestUpdate();
     }
 
