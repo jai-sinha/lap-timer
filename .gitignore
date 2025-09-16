@@ -4,13 +4,17 @@ build/
 /build/**
 
 # Garmin build outputs
-/bin/
+/bin
+/gen
 
 # Garmin package and intermediate binaries
 *.mpk
 *.mpkg
 *.prg
 *.prg.debug.xml
+
+# Exportable builds
+*.iq
 
 # Generated MIR / intermediate compiler files
 **/*.mir

@@ -18,10 +18,10 @@ class lap_timerDelegate extends WatchUi.BehaviorDelegate {
         System.println("Key pressed: " + key);
         System.println(evt.getKey());
         
-        // LIGHT key for lap saving
+        // DOWN key for lap saving
         if (key == 8) {
-            System.println("LIGHT key (8) detected, saving lap...");
             var app = Application.getApp();
+            // Save lap if not paused
             if (app != null && app has :saveLap) {
                 app.saveLap();
                 return true;
@@ -30,12 +30,25 @@ class lap_timerDelegate extends WatchUi.BehaviorDelegate {
         }
         
         // Start/Stop/Enter key for program start/stop and data send
-        if (key == KEY_START || key == KEY_LAP || key == KEY_ENTER) {
-            System.println("Start/Lap/Enter key detected, starting/stopping program...");
+        if (key == 4) {
             var app = Application.getApp();
-            if (app != null && app has :toggleProgram) {
-                app.toggleProgram();
-                return true;
+            System.println("ENTER key pressed, app: " + app);
+            if (app != null) {
+                var state = app.getState();
+                System.println("Current state: " + state);
+                if (state == TIMER_RUNNING) {
+                    // Pause and show the PausedView
+                    System.println("Pausing timer...");
+                    app.pause();
+                    var pausedView = new PausedView();
+                    WatchUi.pushView(pausedView, new PausedViewDelegate(pausedView), WatchUi.SLIDE_UP);
+                    return true;
+                } else if (state == TIMER_STOPPED) {
+                    System.println("Starting timer...");
+                    app.start();
+                    System.println("app.start() called");
+                    return true;
+                }
             }
             return false;
         }

@@ -14,6 +14,7 @@ class lap_timerView extends WatchUi.View {
     private var _bestLap as String = "";  // Best lap time (formatted string)
     private var _prevLap as String = "";  // Previous lap time (formatted string)
     private var _isRunning as Boolean = false;
+    private var _state as Number = TIMER_STOPPED;
 
     function initialize() {
         View.initialize();
@@ -24,7 +25,7 @@ class lap_timerView extends WatchUi.View {
     }
 
     function onShow() as Void {
-        // Timer will be started via toggleStartStop
+        // Timer will be started via user input
     }
 
     function onUpdate(dc as Dc) as Void {
@@ -83,6 +84,7 @@ class lap_timerView extends WatchUi.View {
         _timer = new Timer.Timer();
         _timer.start(method(:updateTimer), 100, true);
         _isRunning = true;
+        _state = TIMER_RUNNING;
         WatchUi.requestUpdate();
     }
 
@@ -92,26 +94,41 @@ class lap_timerView extends WatchUi.View {
             _timer = null;
         }
         _isRunning = false;
+        _state = TIMER_STOPPED;
         WatchUi.requestUpdate();
     }
 
-    public function toggleStartStop() as Void {
-        if (_isRunning) {
-            stopTimer();
-        } else {
-            startTimer();
+    public function pause() as Void {
+        if (_timer != null) {
+            _timer.stop();
+            _timer = null;
         }
+        _isRunning = false;
+        _state = TIMER_PAUSED;
+        WatchUi.requestUpdate();
     }
 
-    public function toggleProgram() as Void {
-        if (_isRunning) {
-            // Stop the program and send data
-            stopTimer();
-            sendDataToPhone();
-            // Exit the app
-            System.exit();
-        } else {
-            // Start the program
+    public function resume() as Void {
+        _startTime = System.getTimer() - _elapsedMs;  // Adjust for paused time
+        _timer = new Timer.Timer();
+        _timer.start(method(:updateTimer), 100, true);
+        _isRunning = true;
+        _state = TIMER_RUNNING;
+        WatchUi.requestUpdate();
+    }
+
+    public function getState() as Number {
+        return _state;
+    }
+
+    public function stopAndExit() as Void {
+        stopTimer();
+        sendDataToPhone();
+        System.exit();
+    }
+
+    public function start() as Void {
+        if (!_isRunning) {
             startTimer();
         }
     }
