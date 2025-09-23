@@ -8,11 +8,6 @@ class lap_timerDelegate extends WatchUi.BehaviorDelegate {
         BehaviorDelegate.initialize();
     }
 
-    function onMenu() as Boolean {
-        WatchUi.pushView(new Rez.Menus.MainMenu(), new lap_timerMenuDelegate(), WatchUi.SLIDE_UP);
-        return true;
-    }
-
     function onKey(evt as WatchUi.KeyEvent) as Boolean {
         var key = evt.getKey();
         System.println("Key pressed: " + key);

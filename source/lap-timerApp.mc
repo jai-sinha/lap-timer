@@ -1,6 +1,7 @@
 import Toybox.Application;
 import Toybox.Lang;
 import Toybox.WatchUi;
+import Toybox.Communications;
 
 (:TimerState)
 enum {
@@ -9,20 +10,46 @@ enum {
     TIMER_PAUSED
 }
 
+class Listener extends Communications.ConnectionListener {
+    function initialize() {
+        Communications.ConnectionListener.initialize();
+    }
+    function onComplete() {
+        System.println("Connection successful!");
+    }
+}
+
 class lap_timerApp extends Application.AppBase {
     private var _currentView as lap_timerView?;
+    private var _listener = new Listener();
 
     function initialize() {
         AppBase.initialize();
     }
 
+
     // onStart() is called on application start up
     function onStart(state as Dictionary?) as Void {
+        Communications.registerForPhoneAppMessages(method(:onPhoneAppMessage));
     }
 
     // onStop() is called when your application is exiting
     function onStop(state as Dictionary?) as Void {
+
     }
+
+    // Handle incoming messages from the phone app
+    function onPhoneAppMessage(msg as Communications.PhoneAppMessage) as Void {
+        System.println("Received message from phone app: " + msg.toString());    
+    }
+
+    // Method to send a message to the phone app
+    public function sendMessageToPhoneApp(content) as Void {
+        Communications.transmit("Sending message: " + content, null, _listener);
+        Communications.transmit(content, null, _listener);
+        System.println("Sent message to phone app: " + content);
+    }
+
 
     // Return the initial view of your application here
     function getInitialView() as [Views] or [Views, InputDelegates] {

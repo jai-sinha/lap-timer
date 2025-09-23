@@ -214,25 +214,8 @@ class lap_timerView extends WatchUi.View {
             "bestLap" => _bestLap,
             "totalTime" => formatTime(_elapsedMs)
         };
-        Communications.makeWebRequest(
-            "https://example.com/api/lap-data",  // Replace with actual endpoint
-            data,
-            {
-                :method => Communications.HTTP_REQUEST_METHOD_POST,
-                :headers => {
-                    "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON
-                }
-            },
-            method(:onDataSent)
-        );
-    }
-
-    function onDataSent(responseCode as Number, data as Dictionary) as Void {
-        if (responseCode == 200) {
-            System.println("Data sent successfully");
-        } else {
-            System.println("Failed to send data: " + responseCode);
-        }
+        // Use app's sendMessageToPhoneApp to send lap data
+        getApp().sendMessageToPhoneApp(data);
     }
 
     private function formatTime(ms as Number) as String {

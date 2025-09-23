@@ -17,8 +17,8 @@ build/
 *.iq
 
 # Generated MIR / intermediate compiler files
-**/*.mir
-build/external-mir/
+mir/
+internal-mir/
 
 # Monkey C build metadata
 .monkey.jungle.cache
