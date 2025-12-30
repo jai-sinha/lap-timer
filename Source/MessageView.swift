@@ -18,10 +18,11 @@ struct MessageView: View {
             .onReceive(GarminService.shared.observeMessages()) { data in
                 do {
                     let dto = try JSONDecoder().decode(MessageDTO.self, from: data)
+                    let results = dto.results
                     message = """
-                    message: \(dto.message)
-                    latitude: \(dto.latitude)
-                    longitude: \(dto.longitude)
+                    Lap Times: \(results.lapTimes)
+                    Best Lap: \(results.bestLap)
+                    Total Time: \(results.totalTime)
                     """
                 } catch {
                     message = ""

@@ -2,7 +2,7 @@ import SwiftUI
 import ConnectIQ
 
 @main
-struct CommsApp: App {
+struct LapTimerApp: App {
     var body: some Scene {
         WindowGroup {
             VStack(alignment: .center) {

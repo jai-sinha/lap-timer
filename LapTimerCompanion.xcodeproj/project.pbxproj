@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		7BA8A7302E7BEBA30056D79F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7BA8A71D2E7BEBA30056D79F /* Assets.xcassets */; };
 		7BA8A7502E7CD4290056D79F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7BA8A74F2E7CD4290056D79F /* LaunchScreen.storyboard */; };
-		7BE05AC72E84BD950057EAE2 /* CommsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE05AC22E84BD950057EAE2 /* CommsApp.swift */; };
+		7BE05AC72E84BD950057EAE2 /* LapTimerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE05AC22E84BD950057EAE2 /* LapTimerApp.swift */; };
 		7BE05AC82E84BD950057EAE2 /* MessageDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE05AC52E84BD950057EAE2 /* MessageDTO.swift */; };
 		7BE05AC92E84BD950057EAE2 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE05AC62E84BD950057EAE2 /* MessageView.swift */; };
 		7BE05ACA2E84BD950057EAE2 /* GarminService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE05AC32E84BD950057EAE2 /* GarminService.swift */; };
@@ -36,7 +36,7 @@
 		7BA8A71D2E7BEBA30056D79F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7BA8A74F2E7CD4290056D79F /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7BA8A7552E7CD86D0056D79F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		7BE05AC22E84BD950057EAE2 /* CommsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommsApp.swift; sourceTree = "<group>"; };
+		7BE05AC22E84BD950057EAE2 /* LapTimerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LapTimerApp.swift; sourceTree = "<group>"; };
 		7BE05AC32E84BD950057EAE2 /* GarminService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarminService.swift; sourceTree = "<group>"; };
 		7BE05AC42E84BD950057EAE2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7BE05AC52E84BD950057EAE2 /* MessageDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDTO.swift; sourceTree = "<group>"; };
@@ -61,7 +61,7 @@
 			isa = PBXGroup;
 			children = (
 				7BA8A7522E7CD64B0056D79F /* Assets */,
-				7BE05AC22E84BD950057EAE2 /* CommsApp.swift */,
+				7BE05AC22E84BD950057EAE2 /* LapTimerApp.swift */,
 				7BE05AC32E84BD950057EAE2 /* GarminService.swift */,
 				7BE05AC42E84BD950057EAE2 /* Info.plist */,
 				7BE05AC52E84BD950057EAE2 /* MessageDTO.swift */,
@@ -177,7 +177,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7BE05AC72E84BD950057EAE2 /* CommsApp.swift in Sources */,
+				7BE05AC72E84BD950057EAE2 /* LapTimerApp.swift in Sources */,
 				7BE05AC82E84BD950057EAE2 /* MessageDTO.swift in Sources */,
 				7BE05AC92E84BD950057EAE2 /* MessageView.swift in Sources */,
 				7BE05ACA2E84BD950057EAE2 /* GarminService.swift in Sources */,
