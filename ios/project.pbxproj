@@ -1,0 +1,354 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7BA8A7302E7BEBA30056D79F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7BA8A71D2E7BEBA30056D79F /* Assets.xcassets */; };
+		7BA8A7502E7CD4290056D79F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7BA8A74F2E7CD4290056D79F /* LaunchScreen.storyboard */; };
+		7BE05AC72E84BD950057EAE2 /* LapTimerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE05AC22E84BD950057EAE2 /* LapTimerApp.swift */; };
+		7BE05AC82E84BD950057EAE2 /* MessageDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE05AC52E84BD950057EAE2 /* MessageDTO.swift */; };
+		7BE05AC92E84BD950057EAE2 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE05AC62E84BD950057EAE2 /* MessageView.swift */; };
+		7BE05ACA2E84BD950057EAE2 /* GarminService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE05AC32E84BD950057EAE2 /* GarminService.swift */; };
+		F0709E221E1A0C4800D255F5 /* ConnectIQ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0709E211E1A0C4800D255F5 /* ConnectIQ.framework */; };
+		F0709E271E1A0D1200D255F5 /* ConnectIQ.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F0709E211E1A0C4800D255F5 /* ConnectIQ.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F0D51BE61DBD5761007502AC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F0709E271E1A0D1200D255F5 /* ConnectIQ.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		7B09F7E02E7E0B0C008AEBAD /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		7BA8A71D2E7BEBA30056D79F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7BA8A74F2E7CD4290056D79F /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		7BA8A7552E7CD86D0056D79F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		7BE05AC22E84BD950057EAE2 /* LapTimerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LapTimerApp.swift; sourceTree = "<group>"; };
+		7BE05AC32E84BD950057EAE2 /* GarminService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarminService.swift; sourceTree = "<group>"; };
+		7BE05AC42E84BD950057EAE2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7BE05AC52E84BD950057EAE2 /* MessageDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDTO.swift; sourceTree = "<group>"; };
+		7BE05AC62E84BD950057EAE2 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
+		F01F14F11DB5E01C0076EBE6 /* LapTimerCompanion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LapTimerCompanion.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F0709E211E1A0C4800D255F5 /* ConnectIQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ConnectIQ.framework; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F01F14EE1DB5E01C0076EBE6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F0709E221E1A0C4800D255F5 /* ConnectIQ.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7BA8A72C2E7BEBA30056D79F /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				7BA8A7522E7CD64B0056D79F /* Assets */,
+				7BE05AC22E84BD950057EAE2 /* LapTimerApp.swift */,
+				7BE05AC32E84BD950057EAE2 /* GarminService.swift */,
+				7BE05AC42E84BD950057EAE2 /* Info.plist */,
+				7BE05AC52E84BD950057EAE2 /* MessageDTO.swift */,
+				7BE05AC62E84BD950057EAE2 /* MessageView.swift */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		7BA8A7522E7CD64B0056D79F /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				7BA8A74F2E7CD4290056D79F /* LaunchScreen.storyboard */,
+				7BA8A71D2E7BEBA30056D79F /* Assets.xcassets */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		F01F14E81DB5E01C0076EBE6 = {
+			isa = PBXGroup;
+			children = (
+				F0709E211E1A0C4800D255F5 /* ConnectIQ.framework */,
+				7BA8A7552E7CD86D0056D79F /* README.md */,
+				7B09F7E02E7E0B0C008AEBAD /* .gitignore */,
+				F01F14F21DB5E01C0076EBE6 /* Products */,
+				7BA8A72C2E7BEBA30056D79F /* Source */,
+			);
+			sourceTree = "<group>";
+		};
+		F01F14F21DB5E01C0076EBE6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F01F14F11DB5E01C0076EBE6 /* LapTimerCompanion.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F01F14F01DB5E01C0076EBE6 /* LapTimerCompanion */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F01F15031DB5E01C0076EBE6 /* Build configuration list for PBXNativeTarget "LapTimerCompanion" */;
+			buildPhases = (
+				F01F14ED1DB5E01C0076EBE6 /* Sources */,
+				F01F14EE1DB5E01C0076EBE6 /* Frameworks */,
+				F01F14EF1DB5E01C0076EBE6 /* Resources */,
+				F0D51BE61DBD5761007502AC /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LapTimerCompanion;
+			productName = "Cruise di2";
+			productReference = F01F14F11DB5E01C0076EBE6 /* LapTimerCompanion.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F01F14E91DB5E01C0076EBE6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0800;
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = "Jai Sinha";
+				TargetAttributes = {
+					F01F14F01DB5E01C0076EBE6 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = GP43JX46JD;
+						LastSwiftMigration = 2600;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = F01F14EC1DB5E01C0076EBE6 /* Build configuration list for PBXProject "LapTimerCompanion" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F01F14E81DB5E01C0076EBE6;
+			productRefGroup = F01F14F21DB5E01C0076EBE6 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F01F14F01DB5E01C0076EBE6 /* LapTimerCompanion */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F01F14EF1DB5E01C0076EBE6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7BA8A7302E7BEBA30056D79F /* Assets.xcassets in Resources */,
+				7BA8A7502E7CD4290056D79F /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F01F14ED1DB5E01C0076EBE6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7BE05AC72E84BD950057EAE2 /* LapTimerApp.swift in Sources */,
+				7BE05AC82E84BD950057EAE2 /* MessageDTO.swift in Sources */,
+				7BE05AC92E84BD950057EAE2 /* MessageView.swift in Sources */,
+				7BE05ACA2E84BD950057EAE2 /* GarminService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F01F15011DB5E01C0076EBE6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F01F15021DB5E01C0076EBE6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F01F15041DB5E01C0076EBE6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_TEAM = GP43JX46JD;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/**",
+					"$(PROJECT_DIR)",
+				);
+				INFOPLIST_FILE = "$(SRCROOT)/Source/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaisinha.LapTimerCompanion;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		F01F15051DB5E01C0076EBE6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_TEAM = GP43JX46JD;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/**",
+					"$(PROJECT_DIR)",
+				);
+				INFOPLIST_FILE = "$(SRCROOT)/Source/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaisinha.LapTimerCompanion;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F01F14EC1DB5E01C0076EBE6 /* Build configuration list for PBXProject "LapTimerCompanion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F01F15011DB5E01C0076EBE6 /* Debug */,
+				F01F15021DB5E01C0076EBE6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F01F15031DB5E01C0076EBE6 /* Build configuration list for PBXNativeTarget "LapTimerCompanion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F01F15041DB5E01C0076EBE6 /* Debug */,
+				F01F15051DB5E01C0076EBE6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F01F14E91DB5E01C0076EBE6 /* Project object */;
+}

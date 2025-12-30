@@ -1,11 +1,6 @@
-# Build artifacts
-/build/
-build/
-/build/**
-
 # Garmin build outputs
-/bin
-/gen
+bin/
+gen/
 
 # Garmin package and intermediate binaries
 *.mpk
@@ -36,3 +31,4 @@ monkey.jungle.cache
 
 # Logs
 *.log
+ConnectIQ.framework/
