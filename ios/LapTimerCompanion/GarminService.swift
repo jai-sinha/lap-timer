@@ -1,11 +1,12 @@
 import Foundation
-import Combine
+import Observation
 import ConnectIQ
 import OSLog
 
 private let logger = Logger(subsystem: "com.jaisinha.laptimercompanion", category: "GarminService")
 
-final class GarminService: ObservableObject {
+@Observable
+final class GarminService {
     // This must match the value in `Info.plist`.
     private static let urlScheme = "com.jaisinha.laptimercompanion"
     private static let storedDeviceUUIDsKey = "GarminService.storedDeviceUUIDs"
@@ -14,22 +15,16 @@ final class GarminService: ObservableObject {
 
     private let manager = Manager()
 
-    private let messageSubject = PassthroughSubject<Data, Never>()
+    let messageStream: AsyncStream<Data>
+    private let messageContinuation: AsyncStream<Data>.Continuation
 
-    @Published var connectedDevices: [IQDevice] = []
-    private var cancellables: Set<AnyCancellable> = []
+    var connectedDevices: [IQDevice] {
+        Array(manager.apps.values.map { $0.device })
+    }
 
     var hasSavedDevices: Bool {
         let uuids = UserDefaults.standard.stringArray(forKey: Self.storedDeviceUUIDsKey) ?? []
         return !uuids.isEmpty
-    }
-
-    func observeMessages() -> AnyPublisher<Data, Never> {
-        messageSubject.eraseToAnyPublisher()
-    }
-
-    var messageStream: AsyncPublisher<PassthroughSubject<Data, Never>> {
-        messageSubject.values
     }
 
     private func saveDevice(_ device: IQDevice) {
@@ -58,23 +53,17 @@ final class GarminService: ObservableObject {
     }
 
     private init() {
-        ConnectIQ.shared?.initialize(withUrlScheme: Self.urlScheme, uiOverrideDelegate: nil)
-        manager.messageHandler = { [weak self] messageData in
-            self?.messageSubject.send(messageData)
-        }
+        var continuation: AsyncStream<Data>.Continuation!
+        self.messageStream = AsyncStream { continuation = $0 }
+        self.messageContinuation = continuation
 
-        manager.$apps
-            .receive(on: RunLoop.main)
-            .map { Array($0.values.map { $0.device }) }
-            .assign(to: \.connectedDevices, on: self)
-            .store(in: &cancellables)
+        ConnectIQ.shared?.initialize(withUrlScheme: Self.urlScheme, uiOverrideDelegate: nil)
+        manager.messageHandler = { messageData in
+            continuation.yield(messageData)
+        }
 
         restoreSavedDevices()
         logger.info("GarminService initialized")
-    }
-
-    func start() {
-        // Service is initialized in init()
     }
 
     @discardableResult
@@ -97,11 +86,11 @@ final class GarminService: ObservableObject {
 }
 
 private extension GarminService {
+    @Observable
     final class Manager: NSObject, IQDeviceEventDelegate, IQAppMessageDelegate {
         private static let watchAppUuid = UUID(uuidString: "dc999a91-9c3d-4fb5-9ab7-1f13ff2ba94c")!
 
-        @Published
-        private(set) var apps: [UUID: IQApp] = [:]
+        var apps: [UUID: IQApp] = [:]
 
         var messageHandler: ((Data) -> Void)?
 
@@ -165,9 +154,6 @@ private extension GarminService {
             }
 
             for app in apps.values {
-                // You may send any ObjC type (e.g. NSNumber, NSString, NSArray, NSDictionary).
-                // Unless you're experiencing difficulties, there's no need to use the `NS*` types directly,
-                // you can use their Swift equivalents.
                 await ConnectIQ.shared?.sendMessage(message, to: app, progress: nil)
                 logger.debug("Sent \(String(describing: message)) to \(app)")
             }

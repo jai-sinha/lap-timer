@@ -1,12 +1,10 @@
 import SwiftUI
-import Combine
 import ConnectIQ
 import OSLog
 
 private let logger = Logger(subsystem: "com.jaisinha.laptimercompanion", category: "MessageView")
 
 struct MessageView: View {
-    @ObservedObject
     var service = GarminService.shared
 
     @State
