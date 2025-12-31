@@ -35,6 +35,7 @@ class lapTimerModel {
 
     function initialize() {
         Position.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:onPosition));
+        _timer = new Timer.Timer();
     }
 
     public function getTimer() as Timer.Timer? {
@@ -44,8 +45,6 @@ class lapTimerModel {
     public function createTimer() as Void {
         if (_timer == null) {
             _timer = new Timer.Timer();
-            _timer.start(method(:onTimer), 100, true);
-            System.println("Model: Timer created and started");
         }
     }
 
@@ -73,6 +72,9 @@ class lapTimerModel {
             _state = TIMER_RUNNING;
             _startTime = System.getTimer();
             _hasStarted = true;
+            if (_timer != null) {
+                _timer.start(method(:onTimer), 100, true);
+            }
             System.println("Model: Timer state set to RUNNING");
             notifyView();
         }
@@ -133,8 +135,8 @@ class lapTimerModel {
     }
 
     public function saveLapAndReset() as Void {
-        if (_elapsedMs > 0) {
-            var lapTimeMs = _elapsedMs - sum(_lapTimesMs);
+        var lapTimeMs = getElapsedTime();
+        if (lapTimeMs > 0) {
             _lapTimesMs.add(lapTimeMs);
             var lapTimeFormatted = formatTime(lapTimeMs);
             _lapTimes.add(lapTimeFormatted);
@@ -190,15 +192,13 @@ class lapTimerModel {
         return formatTime(sum(_lapTimesMs));
     }
 
-
-    // --- Private Helpers ---
-
-    private function onTimer() as Void {
+    public function onTimer() as Void {
         if (_state == TIMER_RUNNING) {
             notifyView();
         }
     }
 
+    // --- Private Helpers ---
 
     private function notifyView() as Void {
         if (_view != null) {

@@ -21,6 +21,7 @@ class lap_timerDelegate extends WatchUi.BehaviorDelegate {
         // DOWN key for lap saving
         if (key == WatchUi.KEY_DOWN) {
             if (model.getState() == TIMER_RUNNING) {
+                System.println("LapTimerDelegate - Saving lap time");
                 model.saveLapAndReset();
                 return true;
             }

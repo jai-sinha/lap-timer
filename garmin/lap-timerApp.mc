@@ -44,13 +44,15 @@ class lap_timerApp extends Application.AppBase {
     }
 
     // Return the initial view of your application here
-    function getInitialView() as Array<Views or InputDelegates> {
+    function getInitialView() as [WatchUi.Views] or [WatchUi.Views, WatchUi.InputDelegates] {
         var view = _view;
         var delegate = _delegate;
         if (view != null && delegate != null) {
-            return [view, delegate] as Array<Views or InputDelegates>;
+            return [view, delegate];
+        } else if (view != null) {
+            return [view];
         }
-        return [] as Array<Views or InputDelegates>;
+        throw new Lang.InvalidValueException("View not initialized");
     }
 
     public function start() as Void {
@@ -119,6 +121,7 @@ class lap_timerApp extends Application.AppBase {
         };
 
         var jsonString = toJsonString(payload);
+        System.println("Sending session data to phone app: " + jsonString);
         sendMessageToPhoneApp(jsonString);
     }
 

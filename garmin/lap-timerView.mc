@@ -81,11 +81,11 @@ class lap_timerView extends WatchUi.View {
         var totalSeconds = ms / 1000;
         var minutes = totalSeconds / 60;
         var seconds = totalSeconds % 60;
-        var hundredths = (ms % 1000) / 10;
+        var tenths = (ms % 1000) / 100;
         return Lang.format("$1$:$2$.$3$", [
             minutes.format("%02d"),
             seconds.format("%02d"),
-            hundredths.format("%02d")
+            tenths.format("%d")
         ]);
     }
 }
