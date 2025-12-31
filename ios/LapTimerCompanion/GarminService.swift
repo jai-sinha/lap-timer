@@ -1,6 +1,9 @@
 import Foundation
 import Combine
 import ConnectIQ
+import OSLog
+
+private let logger = Logger(subsystem: "com.jaisinha.laptimercompanion", category: "GarminService")
 
 final class GarminService {
     // This must match the value in `Info.plist`.
@@ -13,11 +16,17 @@ final class GarminService {
 
     private let messageSubject = PassthroughSubject<Data, Never>()
 
-    private var lifetimeCancellables: Set<AnyCancellable> = []
-
+    var hasSavedDevices: Bool {
+        let uuids = UserDefaults.standard.stringArray(forKey: Self.storedDeviceUUIDsKey) ?? []
+        return !uuids.isEmpty
+    }
 
     func observeMessages() -> AnyPublisher<Data, Never> {
         messageSubject.eraseToAnyPublisher()
+    }
+
+    var messageStream: AsyncPublisher<PassthroughSubject<Data, Never>> {
+        messageSubject.values
     }
 
     private func saveDevice(_ device: IQDevice) {
@@ -35,7 +44,7 @@ final class GarminService {
             if let uuid = UUID(uuidString: uuidString) {
                 if let device = IQDevice(id: uuid, modelName: nil, friendlyName: nil) {
                     ConnectIQ.shared?.register(forDeviceEvents: device, delegate: manager)
-                    print("Restored device with UUID: \(uuidString)")
+                    logger.info("Restored device with UUID: \(uuidString)")
                 }
             }
         }
@@ -51,6 +60,11 @@ final class GarminService {
             self?.messageSubject.send(messageData)
         }
         restoreSavedDevices()
+        logger.info("GarminService initialized")
+    }
+
+    func start() {
+        // Service is initialized in init()
     }
 
     @discardableResult
@@ -74,7 +88,7 @@ final class GarminService {
 
 private extension GarminService {
     final class Manager: NSObject, IQDeviceEventDelegate, IQAppMessageDelegate {
-        private static let watchAppUuid = UUID(uuidString: "dc999a91-9c3d-4fb5-9ab7-1f13ff2ba94c")
+        private static let watchAppUuid = UUID(uuidString: "dc999a91-9c3d-4fb5-9ab7-1f13ff2ba94c")!
 
         @Published
         private(set) var apps: [UUID: IQApp] = [:]
@@ -94,8 +108,8 @@ private extension GarminService {
                 // IMPORTANT: Sending a message right after connecting sends the messages to the void.
                 // I have no idea why it doesn't work, but feel free to shrink the delay. I've found that 100ms works reliably.
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    ConnectIQ.shared?.sendMessage("Hello there.", to: app, progress: nil, completion: {
-                        print($0)
+                    ConnectIQ.shared?.sendMessage("Hello there.", to: app, progress: nil, completion: { result in
+                        logger.debug("Send message result: \(String(describing: result))")
                     })
                 }
 
@@ -103,29 +117,42 @@ private extension GarminService {
                 apps.removeValue(forKey: device.uuid)
 
             @unknown default:
-                print("Unhandled case '\(status.rawValue)'.")
+                logger.warning("Unhandled case '\(status.rawValue)'.")
             }
         }
 
         func receivedMessage(_ message: Any!, from app: IQApp!) {
-            print("Received message from ConnectIQ: \(message.debugDescription)")
+            logger.debug("Received message from ConnectIQ: \(String(describing: message))")
 
             guard let message else { return }
 
             do {
                 messageHandler?(try JSONSerialization.data(withJSONObject: message))
             } catch {
-                print("Failed to parse payload:", error)
+                logger.error("Failed to parse payload: \(error)")
             }
         }
 
         func broadcast(dto: any Encodable) async {
+            let message: Any
+            if let string = dto as? String {
+                message = string
+            } else {
+                do {
+                    let data = try JSONEncoder().encode(dto)
+                    message = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
+                } catch {
+                    logger.error("Failed to encode dto: \(error)")
+                    return
+                }
+            }
+
             for app in apps.values {
                 // You may send any ObjC type (e.g. NSNumber, NSString, NSArray, NSDictionary).
                 // Unless you're experiencing difficulties, there's no need to use the `NS*` types directly,
                 // you can use their Swift equivalents.
-                await ConnectIQ.shared?.sendMessage(dto, to: app, progress: nil)
-                print("Sent \(dto) to \(app)")
+                await ConnectIQ.shared?.sendMessage(message, to: app, progress: nil)
+                logger.debug("Sent \(String(describing: message)) to \(app)")
             }
         }
 

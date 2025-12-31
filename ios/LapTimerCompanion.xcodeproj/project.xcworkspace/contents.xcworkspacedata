@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/dougw/Dropbox/Dev/Garmin-ExampleApp-Swift/Garmin-ExampleApp-Swift.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>

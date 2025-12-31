@@ -10,7 +10,7 @@
 
 # Lap Timer Companion
 
-This is the companion app for my [lap-timer](https://github.com/jai-sinha/lap-timer) Garmin app. It is written in Swift and uses the Connect IQ iOS SDK to communicate with the lap-timer app over Bluetooth.
+This is the iOS companion to the Garmin app. It is written in Swift and uses the Connect IQ iOS SDK to communicate with the watch over Bluetooth.
 
 ## Goals
 

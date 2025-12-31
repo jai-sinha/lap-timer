@@ -4,7 +4,7 @@ import SwiftUI
 struct LapTimerCompanionApp: App {
     init() {
         // Initialize ConnectIQ.
-        GarminService.shared.initialize()
+        GarminService.shared.start()
     }
 
     var body: some Scene {
