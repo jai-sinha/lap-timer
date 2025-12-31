@@ -20,11 +20,11 @@ class PausedView extends WatchUi.View {
 
     function onUpdate(dc as Dc) as Void {
         View.onUpdate(dc);
-        
+
         // Clear the screen
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
         dc.clear();
-        
+
         // Draw "PAUSED" title
         var titleFont = Graphics.FONT_LARGE;
         var titleText = "PAUSED";
@@ -32,22 +32,22 @@ class PausedView extends WatchUi.View {
         var titleHeight = dc.getFontHeight(titleFont);
         var titleX = (dc.getWidth() - titleWidth) / 2;
         var titleY = dc.getHeight() / 4;
-        
+
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
         dc.drawText(titleX, titleY, titleFont, titleText, Graphics.TEXT_JUSTIFY_LEFT);
-        
+
         // Draw options
         var optionFont = Graphics.FONT_MEDIUM;
         var optionHeight = dc.getFontHeight(optionFont);
         var spacing = 20;
         var startY = titleY + titleHeight + spacing;
-        
+
         // Option 1: Resume
         var resumeText = "Resume";
         var resumeWidth = dc.getTextWidthInPixels(resumeText, optionFont);
         var resumeX = (dc.getWidth() - resumeWidth) / 2;
         var resumeY = startY;
-        
+
         if (_highlightedOption == 0) {
             // Highlight Resume option
             dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
@@ -57,13 +57,13 @@ class PausedView extends WatchUi.View {
             dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
         }
         dc.drawText(resumeX, resumeY, optionFont, resumeText, Graphics.TEXT_JUSTIFY_LEFT);
-        
+
         // Option 2: Stop and Send Data
         var stopText = "Stop & Send";
         var stopWidth = dc.getTextWidthInPixels(stopText, optionFont);
         var stopX = (dc.getWidth() - stopWidth) / 2;
         var stopY = resumeY + optionHeight + spacing;
-        
+
         if (_highlightedOption == 1) {
             // Highlight Stop option
             dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
@@ -73,7 +73,7 @@ class PausedView extends WatchUi.View {
             dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
         }
         dc.drawText(stopX, stopY, optionFont, stopText, Graphics.TEXT_JUSTIFY_LEFT);
-        
+
     }
 
     function onHide() as Void {

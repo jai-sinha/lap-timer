@@ -5,7 +5,7 @@ import OSLog
 
 private let logger = Logger(subsystem: "com.jaisinha.laptimercompanion", category: "GarminService")
 
-final class GarminService {
+final class GarminService: ObservableObject {
     // This must match the value in `Info.plist`.
     private static let urlScheme = "com.jaisinha.laptimercompanion"
     private static let storedDeviceUUIDsKey = "GarminService.storedDeviceUUIDs"
@@ -15,6 +15,9 @@ final class GarminService {
     private let manager = Manager()
 
     private let messageSubject = PassthroughSubject<Data, Never>()
+
+    @Published var connectedDevices: [IQDevice] = []
+    private var cancellables: Set<AnyCancellable> = []
 
     var hasSavedDevices: Bool {
         let uuids = UserDefaults.standard.stringArray(forKey: Self.storedDeviceUUIDsKey) ?? []
@@ -59,6 +62,13 @@ final class GarminService {
         manager.messageHandler = { [weak self] messageData in
             self?.messageSubject.send(messageData)
         }
+
+        manager.$apps
+            .receive(on: RunLoop.main)
+            .map { Array($0.values.map { $0.device }) }
+            .assign(to: \.connectedDevices, on: self)
+            .store(in: &cancellables)
+
         restoreSavedDevices()
         logger.info("GarminService initialized")
     }
@@ -125,6 +135,13 @@ private extension GarminService {
             logger.debug("Received message from ConnectIQ: \(String(describing: message))")
 
             guard let message else { return }
+
+            // JSONSerialization.data(withJSONObject:) requires the top-level object to be an NSArray or NSDictionary.
+            // If the watch sends a simple String or Number, this will crash.
+            guard JSONSerialization.isValidJSONObject(message) else {
+                logger.warning("Received message is not a valid JSON object (must be Array or Dictionary): \(String(describing: message))")
+                return
+            }
 
             do {
                 messageHandler?(try JSONSerialization.data(withJSONObject: message))

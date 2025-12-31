@@ -17,7 +17,7 @@ class lap_timerDelegate extends WatchUi.BehaviorDelegate {
         if (model == null) {
             return false;
         }
-        
+
         // DOWN key for lap saving
         if (key == WatchUi.KEY_DOWN) {
             if (model.getState() == TIMER_RUNNING) {
@@ -25,7 +25,7 @@ class lap_timerDelegate extends WatchUi.BehaviorDelegate {
                 return true;
             }
         }
-        
+
         // Start/Stop/Enter key
         if (key == WatchUi.KEY_ENTER) {
             var state = model.getState();
@@ -40,7 +40,7 @@ class lap_timerDelegate extends WatchUi.BehaviorDelegate {
             }
             return true;
         }
-        
+
         return false;
     }
 }

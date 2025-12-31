@@ -13,27 +13,27 @@ class PausedViewDelegate extends WatchUi.BehaviorDelegate {
     function onKey(evt as WatchUi.KeyEvent) as Boolean {
         var key = evt.getKey();
         System.println("PausedViewDelegate - Key pressed: " + key);
-        
+
         // DOWN key (8) for cycling through options
         if (key == 8) {
             _pausedView.cycleOption();
             return true;
         }
-        
+
         // UP key (13) for cycling through options in reverse
         if (key == 13) {
             _pausedView.cycleOptionReverse();
             return true;
         }
-        
+
         // ENTER key for selecting option
         if (key == 4) {
             var selectedOption = _pausedView.selectOption();
             System.println("PausedViewDelegate - Selected option: " + selectedOption);
-            
+
             // Pop this view and return the selected option to the calling delegate
             WatchUi.popView(WatchUi.SLIDE_DOWN);
-            
+
             // Get the app and perform the selected action
             var app = Application.getApp();
             if (app != null) {
@@ -47,10 +47,10 @@ class PausedViewDelegate extends WatchUi.BehaviorDelegate {
                     app.stopAndExit();
                 }
             }
-            
+
             return true;
         }
-        
+
         // BACK key to resume (default action)
         if (key == WatchUi.KEY_ESC) {
             WatchUi.popView(WatchUi.SLIDE_DOWN);
@@ -60,7 +60,7 @@ class PausedViewDelegate extends WatchUi.BehaviorDelegate {
             }
             return true;
         }
-        
+
         return false;
     }
 }

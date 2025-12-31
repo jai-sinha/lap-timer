@@ -29,7 +29,7 @@ class lap_timerView extends WatchUi.View {
         var font = Graphics.FONT_LARGE;
         var textWidth = dc.getTextWidthInPixels(timeString, font);
         var textHeight = dc.getFontHeight(font);
-        
+
         // Draw "Current Lap" label with lap count above the timer
         var lapCount = _model.getLapCount();
         var labelText = "Current Lap";
@@ -41,14 +41,14 @@ class lap_timerView extends WatchUi.View {
         var labelHeight = dc.getFontHeight(labelFont);
         var labelX = (dc.getWidth() - labelWidth) / 2;
         var labelY = (dc.getHeight() - textHeight - labelHeight) / 2;
-        
+
         dc.drawText(labelX, labelY, labelFont, labelText, Graphics.TEXT_JUSTIFY_LEFT);
-        
+
         // Draw timer below the label
         var x = (dc.getWidth() - textWidth) / 2;
         var y = labelY + labelHeight + 5; // 5 pixels spacing
         dc.drawText(x, y, font, timeString, Graphics.TEXT_JUSTIFY_LEFT);
-        
+
         // Draw Best Lap and Prev Lap below the timer
         var tinyFont = Graphics.FONT_XTINY;
         var bestLap = _model.getBestLap();
@@ -56,14 +56,14 @@ class lap_timerView extends WatchUi.View {
 
         var bestText = "B: " + (bestLap.length() > 0 ? bestLap : "--:--.--");
         var prevText = "P: " + (prevLap.length() > 0 ? prevLap : "--:--.--");
-        
+
         var bestWidth = dc.getTextWidthInPixels(bestText, tinyFont);
         var prevWidth = dc.getTextWidthInPixels(prevText, tinyFont);
-        
+
         var bestX = (dc.getWidth() / 2 - bestWidth) / 2;  // Left side
         var prevX = dc.getWidth() / 2 + (dc.getWidth() / 2 - prevWidth) / 2;  // Right side
         var statsY = y + textHeight + 8;  // Below timer
-        
+
         dc.drawText(bestX, statsY, tinyFont, bestText, Graphics.TEXT_JUSTIFY_LEFT);
         dc.drawText(prevX, statsY, tinyFont, prevText, Graphics.TEXT_JUSTIFY_LEFT);
     }

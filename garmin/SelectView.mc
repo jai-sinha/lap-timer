@@ -23,19 +23,19 @@ class SelectView extends WatchUi.View {
 
     function onUpdate(dc as Dc) as Void {
         View.onUpdate(dc);
-        
+
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
         dc.clear();
-        
+
         var titleFont = Graphics.FONT_LARGE;
         var titleText = "Select Track";
         var titleWidth = dc.getTextWidthInPixels(titleText, titleFont);
         var titleX = (dc.getWidth() - titleWidth) / 2;
         var titleY = dc.getHeight() / 4;
-        
+
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
         dc.drawText(titleX, titleY, titleFont, titleText, Graphics.TEXT_JUSTIFY_LEFT);
-        
+
         var optionFont = Graphics.FONT_MEDIUM;
         var optionHeight = dc.getFontHeight(optionFont);
         var spacing = 20;

@@ -1,8 +1,14 @@
 import SwiftUI
 import Combine
 import ConnectIQ
+import OSLog
+
+private let logger = Logger(subsystem: "com.jaisinha.laptimercompanion", category: "MessageView")
 
 struct MessageView: View {
+    @ObservedObject
+    var service = GarminService.shared
+
     @State
     var message = ""
 
@@ -14,11 +20,23 @@ struct MessageView: View {
 
     var body: some View {
         VStack(spacing: 20) {
+            if let device = service.connectedDevices.first {
+                Text("Connected to \(device.friendlyName ?? "Unknown Device")")
+                    .font(.headline)
+                    .foregroundColor(.green)
+            } else {
+                Text("Not Connected")
+                    .font(.headline)
+                    .foregroundColor(.red)
+            }
+
             Text(message.isEmpty ? "No message from the spirits." : "The spirits say:\n\(message)")
                 .multilineTextAlignment(.center)
 
-            Button("Connect Device") {
-                ConnectIQ.shared?.showDeviceSelection()
+            if service.connectedDevices.isEmpty {
+                Button("Connect Device") {
+                    ConnectIQ.shared?.showDeviceSelection()
+                }
             }
         }
         .task {
@@ -32,13 +50,13 @@ struct MessageView: View {
             for await data in GarminService.shared.messageStream {
                 do {
                     let dto = try JSONDecoder().decode(MessageDTO.self, from: data)
-                    let results = dto.results
                     message = """
-                    Lap Times: \(results.lapTimes)
-                    Best Lap: \(results.bestLap)
-                    Total Time: \(results.totalTime)
+                    Lap Times: \(dto.lapTimes)
+                    Best Lap: \(dto.bestLap)
+                    Total Time: \(dto.totalTime)
                     """
                 } catch {
+                    logger.error("Failed to decode message: \(error)")
                     message = ""
                 }
             }

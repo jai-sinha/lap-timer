@@ -117,7 +117,7 @@ class lap_timerApp extends Application.AppBase {
                 "totalTime" => totalTime
             }
         };
-        
+
         var jsonString = toJsonString(payload);
         sendMessageToPhoneApp(jsonString);
     }
