@@ -3,6 +3,9 @@ import Toybox.System;
 import Toybox.Timer;
 import Toybox.Position;
 import Toybox.Math;
+import Toybox.ActivityRecording;
+import Toybox.Activity;
+import Toybox.Sensor;
 
 (:TimerState)
 enum {
@@ -14,12 +17,14 @@ enum {
 class lapTimerModel {
     private var _state as Number = TIMER_STOPPED;
     private var _timer as Timer.Timer?;
+    private var _session as ActivityRecording.Session?;
     private var _startTime as Number = 0;
     private var _elapsedMs as Number = 0;
     private var _lapTimes as Array<String> = [];
     private var _lapTimesMs as Array<Number> = [];
     private var _bestLap as String = "";
     private var _prevLap as String = "";
+    private var _currentHeartRate as Number = 0;
 
     // GPS-related variables
     private var _currentLocation as Position.Location?;
@@ -35,6 +40,8 @@ class lapTimerModel {
 
     function initialize() {
         Position.enableLocationEvents(Position.LOCATION_CONTINUOUS, method(:onPosition));
+        Sensor.setEnabledSensors([Sensor.SENSOR_HEARTRATE]);
+        Sensor.enableSensorEvents(method(:onSensor));
         _timer = new Timer.Timer();
     }
 
@@ -72,6 +79,19 @@ class lapTimerModel {
             _state = TIMER_RUNNING;
             _startTime = System.getTimer();
             _hasStarted = true;
+            
+            // Start Activity Recording
+            if (_session == null) {
+                _session = ActivityRecording.createSession({
+                    :name => "Track Session",
+                    :sport => Activity.SPORT_AUTO_RACING, // Using Auto Racing as base sport
+                    :subSport => Activity.SUB_SPORT_GENERIC
+                });
+            }
+            if (_session != null) {
+                _session.start();
+            }
+
             if (_timer != null) {
                 _timer.start(method(:onTimer), 100, true);
             }
@@ -85,6 +105,9 @@ class lapTimerModel {
             if (_timer != null) {
                 _timer.stop();
             }
+            if (_session != null && _session.isRecording()) {
+                _session.stop();
+            }
             _state = TIMER_PAUSED;
             _elapsedMs += System.getTimer() - _startTime;
             System.println("Model: Timer paused");
@@ -96,6 +119,9 @@ class lapTimerModel {
         if (_state == TIMER_PAUSED) {
             _state = TIMER_RUNNING;
             _startTime = System.getTimer();
+            if (_session != null) {
+                _session.start();
+            }
             if (_timer != null) {
                 _timer.start(method(:onTimer), 100, true);
             }
@@ -109,6 +135,9 @@ class lapTimerModel {
             if (_timer != null) {
                 _timer.stop();
             }
+            if (_session != null && _session.isRecording()) {
+                _session.stop();
+            }
             if (_state == TIMER_RUNNING) {
                  _elapsedMs += System.getTimer() - _startTime;
             }
@@ -118,10 +147,29 @@ class lapTimerModel {
         }
     }
 
+    public function saveRecording() as Void {
+        if (_session != null) {
+            // For development: Discard the session to avoid saving .fit files to the watch
+            // In production, you would use _session.save() to let Garmin Connect sync it
+            _session.discard(); 
+            _session = null;
+            System.println("Model: Session saved (Simulated - Discarded for Dev)");
+        }
+    }
+
+    public function discardRecording() as Void {
+        if (_session != null) {
+            _session.discard();
+            _session = null;
+            System.println("Model: Session discarded");
+        }
+    }
+
     public function reset() as Void {
         if (_timer != null) {
             _timer.stop();
         }
+        discardRecording(); // Discard any active session on reset
         _state = TIMER_STOPPED;
         _elapsedMs = 0;
         _lapTimes = [];
@@ -137,6 +185,11 @@ class lapTimerModel {
     public function saveLapAndReset() as Void {
         var lapTimeMs = getElapsedTime();
         if (lapTimeMs > 0) {
+            // Add lap to FIT file
+            if (_session != null && _session.isRecording()) {
+                _session.addLap();
+            }
+
             _lapTimesMs.add(lapTimeMs);
             var lapTimeFormatted = formatTime(lapTimeMs);
             _lapTimes.add(lapTimeFormatted);
@@ -192,9 +245,20 @@ class lapTimerModel {
         return formatTime(sum(_lapTimesMs));
     }
 
+    public function getCurrentHeartRate() as Number {
+        return _currentHeartRate;
+    }
+
     public function onTimer() as Void {
         if (_state == TIMER_RUNNING) {
             notifyView();
+        }
+    }
+
+    public function onSensor(info as Sensor.Info) as Void {
+        if (info.heartRate != null) {
+            _currentHeartRate = info.heartRate;
+            System.println("HR: " + _currentHeartRate);
         }
     }
 
@@ -246,6 +310,8 @@ class lapTimerModel {
     public function onPosition(info as Position.Info) as Void {
         if (info.accuracy >= Position.QUALITY_USABLE) {
             _currentLocation = info.position;
+            var deg = _currentLocation.toDegrees();
+            System.println("GPS: " + deg[0] + ", " + deg[1]);
             if (_lastLocation != null && _hasStarted) {
                 checkStartFinishLineCrossing();
             }

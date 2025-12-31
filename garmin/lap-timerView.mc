@@ -66,6 +66,17 @@ class lap_timerView extends WatchUi.View {
 
         dc.drawText(bestX, statsY, tinyFont, bestText, Graphics.TEXT_JUSTIFY_LEFT);
         dc.drawText(prevX, statsY, tinyFont, prevText, Graphics.TEXT_JUSTIFY_LEFT);
+
+        // // Draw Heart Rate
+        // var hr = _model.getCurrentHeartRate();
+        // if (hr > 0) {
+        //     var hrText = hr.toString() + " bpm";
+        //     var hrFont = Graphics.FONT_SMALL;
+        //     var hrWidth = dc.getTextWidthInPixels(hrText, hrFont);
+        //     var hrX = (dc.getWidth() - hrWidth) / 2;
+        //     var hrY = statsY + dc.getFontHeight(tinyFont) + 5;
+        //     dc.drawText(hrX, hrY, hrFont, hrText, Graphics.TEXT_JUSTIFY_LEFT);
+        // }
     }
 
     function onHide() as Void {

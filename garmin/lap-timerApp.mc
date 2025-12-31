@@ -37,6 +37,14 @@ class lap_timerApp extends Application.AppBase {
 
     // onStop() is called when your application is exiting
     function onStop(state as Dictionary?) as Void {
+        System.println("App: onStop called");
+        var model = _model;
+        if (model != null) {
+            model.stop(); 
+            // If the session hasn't been saved yet (i.e. via stopAndExit), this will discard it
+            // if it has been saved, this will do nothing
+            model.discardRecording();
+        }
     }
 
     public function getModel() as lapTimerModel? {
@@ -98,6 +106,7 @@ class lap_timerApp extends Application.AppBase {
         var model = _model;
         if (model != null) {
             model.stop();
+            model.saveRecording(); // Save the FIT file
         }
         sendSessionData();
         System.exit();
